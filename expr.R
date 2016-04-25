@@ -3,6 +3,8 @@
 phens <- read.table(file='phens.txt', sep='\t', header=T)
 
 files_in <- read.table(file='files.txt', header=F)
+files_in <- files_in[!(duplicated(files_in$V4)),]
+q()
 # Recreate phenotype and expression objects
 idx <- match(files_in[,4], phens[,2])
 idx2 <- match(phens[,2], files_in[,4])
