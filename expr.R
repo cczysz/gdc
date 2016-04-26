@@ -25,4 +25,7 @@ for (i in seq(length(df_list))) {
 }
 rm(df_list)
 colnames(expr_df) <- phens[,1]
-cond <- data.frame(row.names=phens[,1], Sex=factor(phens$gender))
+cond <- data.frame(row.names=phens[,2], Sex=factor(phens$gender))
+
+save(expr_df, file='exprs.Robj')
+save(cond, file='phens.Robj')
