@@ -155,6 +155,11 @@ setwd('/home/t.cri.cczysz/gdc/')
 
 load('exprs.Robj')
 load('phens.Robj')
+
+exp_stats <- expr_df[(nrow(expr_df)-4):nrow(expr_df),]
+exprs <- expr_df[1:(nrow(expr_df)-5),]
+
+x <- performDE(exprs, cond)
 if (F) {
 exp_dir <- "/home/t.cri.cczysz/tcga/mirna_expression"
 phen_dir <- "/home/t.cri.cczysz/tcga/phen"
