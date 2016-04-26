@@ -44,14 +44,18 @@ importData <- function(i) {
 
 performDE <- function(expr, phen) {
 
-	rs <- rowSums(expr)
-	use <- (rs > 10)
+	gt10 <- expr > 10 # True if gene x individual count greater than 10
+	rs <- rowSums(gt10) # For each gene, number of individuals w/ count > 10
+	use <- (rs >= (0.95*ncol(expr))) # Test genes with 95% individuals having counts > 10 
 	expr <- expr[use,]
+	print(dim(expr))
 
 	dds <- DESeqDataSetFromMatrix(countData = expr, colData = phen, design = ~ Sex)
-
+	dds <- DESeq(dds)
+	return(dds)
+	if (F) {	
 	# Estimate surrogate variables
-	dds <- estimateSizeFactors(dds)
+	#dds <- estimateSizeFactors(dds)
 	dat <- counts(dds, normalized=TRUE)
 	#print(head(dat))
 	mod <- model.matrix(~phen$Sex, colData(dds))
@@ -68,6 +72,7 @@ performDE <- function(expr, phen) {
 	ddssva <- DESeq(ddssva)
 	res <- results(ddssva)
 	return(res)
+	}
 	#condition <- as.factor(phen$Sex)
 	#cds <- newCountDataSet(expr, condition)	
 	#cds <- estimateSizeFactors(cds)
@@ -158,8 +163,10 @@ load('phens.Robj')
 
 exp_stats <- expr_df[(nrow(expr_df)-4):nrow(expr_df),]
 exprs <- expr_df[1:(nrow(expr_df)-5),]
-
 x <- performDE(exprs, cond)
+save(x, file='de.Robj')
+
+q()
 if (F) {
 exp_dir <- "/home/t.cri.cczysz/tcga/mirna_expression"
 phen_dir <- "/home/t.cri.cczysz/tcga/phen"
