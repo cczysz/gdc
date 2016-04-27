@@ -65,7 +65,7 @@ performDE <- function(expr, phen) {
 	}
 
 	dds <- DESeqDataSetFromMatrix(countData = expr, colData = phen, design = ~ Sex)
-	dds <- DESeq(dds)
+	dds <- DESeq(dds, parallel=T)
 	return(dds)
 	if (F) {	
 	# Estimate surrogate variables
@@ -169,6 +169,8 @@ library(biomaRt)
 library(ggplot2)
 #library(goseq)
 library(sva)
+library("BiocParallel")
+register(MulticoreParam(4))
 
 setwd('/home/t.cri.cczysz/gdc/')
 
@@ -179,7 +181,7 @@ exp_stats <- expr_df[(nrow(expr_df)-4):nrow(expr_df),]
 exprs <- expr_df[1:(nrow(expr_df)-5),]
 x <- performDE(exprs, cond)
 save(x, file='de.Robj')
-y <- results(x)
+y <- results(x, parallel=T)
 save(y, file='results.Robj')
 
 q()
