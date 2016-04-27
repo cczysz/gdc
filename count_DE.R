@@ -44,11 +44,25 @@ importData <- function(i) {
 
 performDE <- function(expr, phen) {
 
+	# First, filter genes with 0 count in all individuals
+	use <- (rowSums(expr) > 0)
+	expr <- expr[use,]
+
+	# Filter low gene counts
+	nmale <- sum(phen$Sex == 'male')
+	maleUse <- (rowSums(expr[, phen$Sex=='male'] > 10) >= (0.66 * nmale))
+	nfemale <- sum(phen$Sex == 'female')
+	femaleUse <- (rowSums(expr[, phen$Sex=='female'] > 10) >= (0.66 * nfemale))
+
+	expr <- expr[(maleUse & femaleUse),]
+	print(dim(expr))
+	if (F) {
 	gt10 <- expr > 10 # True if gene x individual count greater than 10
 	rs <- rowSums(gt10) # For each gene, number of individuals w/ count > 10
 	use <- (rs >= (0.95*ncol(expr))) # Test genes with 95% individuals having counts > 10 
 	expr <- expr[use,]
 	print(dim(expr))
+	}
 
 	dds <- DESeqDataSetFromMatrix(countData = expr, colData = phen, design = ~ Sex)
 	dds <- DESeq(dds)
@@ -165,6 +179,8 @@ exp_stats <- expr_df[(nrow(expr_df)-4):nrow(expr_df),]
 exprs <- expr_df[1:(nrow(expr_df)-5),]
 x <- performDE(exprs, cond)
 save(x, file='de.Robj')
+y <- results(x)
+save(y, file='results.Robj')
 
 q()
 if (F) {
