@@ -2,19 +2,19 @@
 
 phens <- read.table(file='phens.txt', sep='\t', header=T)
 
-files_in <- read.table(file='out.txt', header=F)
+files_in <- read.table(file='id_conversions.txt', header=F, stringsAsFactors=F)
 dup_ind <- read.table(file='duplicated.txt', header=F)
-omit <- (files_in$V3%in%dup_ind$V1)
+omit <- (files_in$V4%in%dup_ind$V1)
 
 files_in <- files_in[!omit, ]
 
-phens_and_expr <- intersect(phens$bcr_patient_uuid, files_in$V3)
+phens_and_expr <- intersect(phens$bcr_patient_uuid, files_in$V4)
 phens <- phens[phens$bcr_patient_uuid%in%phens_and_expr,]
-files_in <- files_in[files_in$V3%in%phens_and_expr,]
+files_in <- files_in[files_in$V4%in%phens_and_expr,]
 # files_in <- files_in[!(duplicated(files_in$V4)),]
 # Recreate phenotype and expression objects
-idx <- match(files_in[,3], phens[,2])
-idx2 <- match(phens[,2], files_in[,3])
+idx <- match(files_in[,4], phens[,2])
+idx2 <- match(phens[,2], files_in[,4])
 phens <- phens[idx,]
 phens$File <- files_in$V1
 
