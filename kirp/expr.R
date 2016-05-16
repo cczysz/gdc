@@ -2,7 +2,7 @@
 
 phens <- read.table(file='phens.txt', sep='\t', header=T)
 
-files_in <- read.table(file='files.txt', header=F)
+files_in <- read.table(file='files.txt', header=F, stringsAsFactors=F)
 dup_ind <- read.table(file='duplicated.txt', header=F)
 omit <- (files_in$V4%in%dup_ind$V1)
 
