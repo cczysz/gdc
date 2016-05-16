@@ -60,8 +60,8 @@ load('luad_phens.Robj')
 
 exp_stats <- expr_df[(nrow(expr_df)-4):nrow(expr_df),]
 exprs <- expr_df[1:(nrow(expr_df)-5),]
-thca_deseq <- performDE(exprs, cond)
-save(thca_deseq, file='thca_de.Robj')
-thca_results <- results(thca_deseq, parallel=T)
-thca_results <- thca_results[order(thca_results$padj),]
-save(thca_results, file='thca_results.Robj')
+luad_deseq <- performDE(exprs, cond)
+save(luad_deseq, file='luad_de.Robj')
+luad_results <- results(luad_deseq, parallel=T)
+luad_results <- luad_results[order(luad_results$padj),]
+save(luad_results, file='luad_results.Robj')
