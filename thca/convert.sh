@@ -3,6 +3,12 @@
 # $2 allison's conversion file
 # $3 transposed CDEs file with id, uuid, and gender
 
+# Outputs 4 columns:
+# Full path
+# Filename
+# File UUID
+# Phen UUID
+
 #i=files.txt
 #j=htseq.txt
 #k=cdes.txt
@@ -31,6 +37,6 @@ done < file_id.txt
 cut -f3 conversion.txt > phen_uuid.txt
 
 # Combine files to generate one conversion file
-paste $1 file_id.txt phen_uuid.txt > id_conversions.txt
+paste $1 basename.txt file_id.txt phen_uuid.txt > id_conversions.txt
 
 rm basename.txt file_id.txt conversion.txt phen_uuid.txt

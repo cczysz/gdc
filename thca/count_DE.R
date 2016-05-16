@@ -1,3 +1,5 @@
+setwd('/home/t.cri.cczysz/gdc/thca')
+
 performDE <- function(expr, phen) {
 
 	# First, filter genes with 0 count in all individuals
@@ -5,10 +7,12 @@ performDE <- function(expr, phen) {
 	expr <- expr[use,]
 
 	# Filter low gene counts
+	# Genes must have counts > 10 in at least 6 males or 6 females
+
 	nmale <- sum(phen$Sex == 'male')
-	maleUse <- (rowSums(expr[, phen$Sex=='male'] > 10) >= (0.66 * nmale))
+	maleUse <- (rowSums(expr[, phen$Sex=='male'] > 10) >= 6 )
 	nfemale <- sum(phen$Sex == 'female')
-	femaleUse <- (rowSums(expr[, phen$Sex=='female'] > 10) >= (0.66 * nfemale))
+	femaleUse <- (rowSums(expr[, phen$Sex=='female'] > 10) >= 6 )
 
 	expr <- expr[(maleUse | femaleUse),]
 	print(dim(expr))
@@ -52,8 +56,6 @@ library(sva)
 library(BiocParallel)
 register(MulticoreParam(4))
 
-setwd('/home/t.cri.cczysz/gdc/thca')
-
 load('exprs.Robj')
 load('phens.Robj')
 
@@ -61,6 +63,7 @@ exp_stats <- expr_df[(nrow(expr_df)-4):nrow(expr_df),]
 exprs <- expr_df[1:(nrow(expr_df)-5),]
 thca_deseq <- performDE(exprs, cond)
 save(thca_deseq, file='thca_de.Robj')
+
 thca_results <- results(thca_deseq, parallel=T)
 thca_results <- thca_results[order(thca_results$padj),]
 save(thca_results, file='thca_results.Robj')
